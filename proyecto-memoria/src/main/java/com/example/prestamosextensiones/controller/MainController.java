@@ -34,7 +34,8 @@ public class MainController {
         cargarBloques();
         actualizarLista();
 
-        // También se puede cargar un registro seleccionándolo en el ListView.
+        // Si el alumno selecciona un elemento del ListView,
+        // también puede cargar sus datos en los mismos controles.
         lvRegistros.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 cargarSeleccion(newValue);
@@ -43,26 +44,43 @@ public class MainController {
     }
 
     private void cargarBloques() {
-        String[] bloques = service.obtenerBloques();
-        for (int i = 0; i < bloques.length; i++) {
-            cbBloque.getItems().add(bloques[i]);
+        String[] turnos = service.obtenerBloques();
+        for (int i = 0; i < turnos.length; i++) {
+            cbBloque.getItems().add(turnos[i]);
         }
     }
 
     @FXML
     public void agregar() {
-        // TODO:
-        // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
-        // 2. Mandar esos datos al service.
-        // 3. Si el service regresa un mensaje, mostrar error.
-        // 4. Si regresa null, refrescar la lista y limpiar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
+
+        String nombre = txtNombreSolicitante.getText();
+        String area = txtArea.getText();
+        String bloque = cbBloque.getValue();
+
+
+        if (nombre == null || nombre.isEmpty() ||
+                area == null || area.isEmpty() ||
+                bloque == null || bloque.isEmpty()) {
+
+            mostrarMensaje("Error", "Todos los campos son obligatorios.", Alert.AlertType.INFORMATION);
+            return;
+        }
+
+        PrestamoExtension nuevo = new PrestamoExtension(nombre, area, bloque);
+
     }
 
     @FXML
     public void buscar() {
-        // Método de ejemplo resuelto.
-        PrestamoExtension registro = service.buscarPorNombreSolicitante(txtNombreSolicitante.getText());
+
+        String nombre = txtNombreSolicitante.getText();
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            mostrarMensaje("Error", "Ingrese el nombre del solicitante para buscar.", Alert.AlertType.INFORMATION);
+            return;
+        }
+
+        PrestamoExtension registro = service.buscarPorNombreSolicitante(nombre.trim());
 
         if (registro == null) {
             mostrarMensaje("Aviso", "Registro no encontrado", Alert.AlertType.WARNING);
@@ -73,48 +91,40 @@ public class MainController {
         txtArea.setText(registro.getArea());
         cbBloque.setValue(registro.getBloque());
 
-        // Este valor es clave para UPDATE.
         nombreOriginal = registro.getNombreSolicitante();
     }
 
     @FXML
     public void actualizar() {
-        // TODO:
-        // UPDATE reutiliza los mismos controles.
-        //
-        // Flujo esperado:
-        // 1. Primero buscar por nombre o seleccionar desde el ListView.
-        // 2. Eso debe cargar los datos en pantalla y guardar nombreOriginal.
-        // 3. Luego el usuario modifica txtNombreSolicitante, txtArea y cbBloque.
-        // 4. Al presionar Actualizar, mandar al service:
-        //      - nombreOriginal
-        //      - txtNombreSolicitante.getText()
-        //      - txtArea.getText()
-        //      - cbBloque.getValue()
-        // 5. El service debe buscar el registro original usando nombreOriginal.
-        // 6. Si lo encuentra, debe cambiar sus datos.
-        // 7. Luego refrescar el ListView y limpiar los controles.
-        //
-        // Importante:
-        // Si nombreOriginal es null, entonces no se ha buscado ni seleccionado nada.
-        mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
+        if (nombreOriginal == null) {
+            mostrarMensaje("Error", "Primero busca o selecciona un registro para actualizar", Alert.AlertType.INFORMATION);
+            return;
+        }
+
+        String nuevoNombre = txtNombreSolicitante.getText();
+        String nuevaArea = txtArea.getText();
+        String nuevoBloque = cbBloque.getValue();
+
+        PrestamoExtension actualizado = new PrestamoExtension(nuevoNombre, nuevaArea, nuevoBloque);
+
+        if (Boolean.parseBoolean(service.actualizar(nombreOriginal, actualizado))) {
+            actualizarLista();
+            limpiar();
+            nombreOriginal = null;
+        }
     }
 
     @FXML
     public void eliminar() {
-        // TODO:
-        // DELETE sí borra el objeto de la lista.
-        //
-        // Flujo esperado:
-        // 1. Tomar el nombre desde txtNombreSolicitante.
-        // 2. Mandarlo al service.
-        // 3. El service debe buscarlo y eliminarlo de la lista.
-        // 4. Refrescar el ListView.
-        // 5. Limpiar controles.
-        //
-        // También se puede seleccionar un elemento del ListView
-        // y luego presionar Eliminar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Eliminar", Alert.AlertType.INFORMATION);
+
+        String nombre = txtNombreSolicitante.getText();
+        if (Boolean.parseBoolean(service.eliminar(nombre))) {
+            actualizarLista();
+            limpiar();
+        } else {
+            mostrarMensaje("Error", "No existeel registro a eliminar.", Alert.AlertType.INFORMATION   );
+        }
+
     }
 
     @FXML
@@ -131,7 +141,7 @@ public class MainController {
         List<PrestamoExtension> registros = service.obtenerTodos();
 
         for (int i = 0; i < registros.size(); i++) {
-            lvRegistros.getItems().add(registros.get(i).toString());
+            ListView<PrestamoExtension> lvRegistros;
         }
     }
 

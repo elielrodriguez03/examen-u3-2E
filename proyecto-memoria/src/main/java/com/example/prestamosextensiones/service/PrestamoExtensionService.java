@@ -27,7 +27,7 @@ public class PrestamoExtensionService {
         return repository.findByNombreSolicitante(nombreSolicitante.trim());
     }
 
-    public String agregar(String nombreSolicitante, String area, String bloque) {
+    public String agregar(PrestamoExtension nuevo) {
         // TODO:
         // 1. Validar que nombreSolicitante no esté vacío.
         // 2. Validar que area no esté vacía.
@@ -62,5 +62,13 @@ public class PrestamoExtensionService {
         // 3. Si elimina correctamente, regresar null.
         // 4. Si no existe, regresar un mensaje de error.
         return "Falta implementar eliminar en el service";
+    }
+
+    public String actualizar(String nombreOriginal, PrestamoExtension actualizado) {
+        return null;
+    }
+
+    public String[] cargarBloques() {
+        return null;
     }
 }
