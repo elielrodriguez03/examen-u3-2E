@@ -15,6 +15,7 @@ public class MainController {
     @FXML
     private TextField txtNombreSolicitante;
 
+
     @FXML
     private TextField txtArea;
 
@@ -53,6 +54,8 @@ public class MainController {
     public void agregar() {
         // TODO:
         // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
+
+            PrestamoExtension agregar= service.agregar()
         // 2. Mandar esos datos al service.
         // 3. Si el service regresa un mensaje, mostrar error.
         // 4. Si regresa null, refrescar la lista y limpiar.
@@ -103,18 +106,11 @@ public class MainController {
     @FXML
     public void eliminar() {
         // TODO:
-        // DELETE sí borra el objeto de la lista.
-        //
-        // Flujo esperado:
-        // 1. Tomar el nombre desde txtNombreSolicitante.
-        // 2. Mandarlo al service.
-        // 3. El service debe buscarlo y eliminarlo de la lista.
-        // 4. Refrescar el ListView.
-        // 5. Limpiar controles.
-        //
-        // También se puede seleccionar un elemento del ListView
-        // y luego presionar Eliminar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Eliminar", Alert.AlertType.INFORMATION);
+        String nombre = txtNombreSolicitante.getText();
+        actualizarLista();
+        limpiar();
+        nombreOriginal = null;
+        mostrarMensaje("Pendiente", Alert.AlertType.INFORMATION);
     }
 
     @FXML
