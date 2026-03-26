@@ -23,7 +23,6 @@ public class PrestamoExtensionService {
         if (nombreSolicitante == null || nombreSolicitante.trim().isEmpty()) {
             return null;
         }
-
         return repository.findByNombreSolicitante(nombreSolicitante.trim());
     }
 
@@ -37,7 +36,29 @@ public class PrestamoExtensionService {
         // 6. Guardarlo usando repository.save(...).
         // 7. Si todo sale bien, regresar null.
         // 8. Si algo falla, regresar un mensaje de error.
-        return "Falta implementar agregar en el service";
+        if (nombreSolicitante == null || nombreSolicitante.isBlank()) {
+            return "El nombre del solicitante es obligatorio.";
+        }
+        if (area == null || area.isBlank()) {
+            return "El área es obligatoria.";
+        }
+        if (bloque == null || bloque.isBlank()) {
+            return "El bloque es obligatorio.";
+        }
+
+        PrestamoExtension existente = repository.findByNombreSolicitante(nombreSolicitante.trim());
+        if (existente != null) {
+            return "Ya existe un registro con el nombre: " + nombreSolicitante;
+        }
+
+        PrestamoExtension nuevo = new PrestamoExtension(
+                nombreSolicitante.trim(),
+                area.trim(),
+                bloque
+        );
+        repository.save(nuevo);
+
+        return null;
     }
 
     public String actualizar(String nombreOriginal, String nuevoNombre, String nuevaArea, String nuevoBloque) {
@@ -52,7 +73,42 @@ public class PrestamoExtensionService {
         //      registro.setArea(...);
         //      registro.setBloque(...);
         // 7. Regresar null si la actualización fue correcta.
-        return "Falta implementar actualizar en el service";
+        if (nombreOriginal == null || nombreOriginal.isBlank()) {
+            return "No se ha seleccionado ningún registro para actualizar.";
+        }
+
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            return "El nuevo nombre del solicitante es obligatorio.";
+        }
+        if (nuevaArea == null || nuevaArea.isBlank()) {
+            return "La nueva área es obligatoria.";
+        }
+        if (nuevoBloque == null || nuevoBloque.isBlank()) {
+            return "El nuevo bloque es obligatorio.";
+        }
+
+        PrestamoExtension registro = repository.findByNombreSolicitante(nombreOriginal.trim());
+
+
+        if (registro == null) {
+            return "No se encontró el registro original: " + nombreOriginal;
+        }
+
+        boolean nombreCambio = !nombreOriginal.trim().equalsIgnoreCase(nuevoNombre.trim());
+        if (nombreCambio) {
+            PrestamoExtension repetido = repository.findByNombreSolicitante(nuevoNombre.trim());
+            if (repetido != null) {
+                return "Ya existe un registro con el nombre: " + nuevoNombre;
+            }
+        }
+
+
+        registro.setNombreSolicitante(nuevoNombre.trim());
+        registro.setArea(nuevaArea.trim());
+        registro.setBloque(nuevoBloque);
+
+
+        return null;
     }
 
     public String eliminar(String nombreSolicitante) {
@@ -61,6 +117,15 @@ public class PrestamoExtensionService {
         // 2. Usar repository.deleteByNombreSolicitante(...).
         // 3. Si elimina correctamente, regresar null.
         // 4. Si no existe, regresar un mensaje de error.
-        return "Falta implementar eliminar en el service";
+        if (nombreSolicitante == null || nombreSolicitante.isBlank()) {
+            return "El nombre del solicitante es obligatorio para eliminar.";
+        }
+
+        boolean eliminado = repository.deleteByNombreSolicitante(nombreSolicitante.trim());
+
+        if (!eliminado) {
+            return "No se encontró el registro con el nombre: " + nombreSolicitante;
+        }
+        return null;
     }
 }
