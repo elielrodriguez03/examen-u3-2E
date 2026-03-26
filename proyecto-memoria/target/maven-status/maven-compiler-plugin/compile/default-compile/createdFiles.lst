@@ -1,0 +1,6 @@
+com\example\prestamosextensiones\Main.class
+com\example\prestamosextensiones\model\PrestamoExtension.class
+com\example\prestamosextensiones\repository\PrestamoExtensionRepository.class
+module-info.class
+com\example\prestamosextensiones\controller\MainController.class
+com\example\prestamosextensiones\service\PrestamoExtensionService.class

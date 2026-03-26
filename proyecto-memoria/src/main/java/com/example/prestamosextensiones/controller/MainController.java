@@ -2,6 +2,7 @@ package com.example.prestamosextensiones.controller;
 
 import com.example.prestamosextensiones.model.PrestamoExtension;
 import com.example.prestamosextensiones.service.PrestamoExtensionService;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
@@ -34,12 +35,13 @@ public class MainController {
         cargarBloques();
         actualizarLista();
 
-        // También se puede cargar un registro seleccionándolo en el ListView.
+        // También se puede cargar un registro seleccionándolo en el ListView.x
         lvRegistros.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 cargarSeleccion(newValue);
             }
         });
+        nombreOriginal = txtNombreSolicitante.getText();
     }
 
     private void cargarBloques() {
@@ -56,7 +58,20 @@ public class MainController {
         // 2. Mandar esos datos al service.
         // 3. Si el service regresa un mensaje, mostrar error.
         // 4. Si regresa null, refrescar la lista y limpiar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
+        String nombre = txtNombreSolicitante.getText().trim();
+        String area = txtArea.getText().trim();
+        ObservableList<String> bloqueObjeto = cbBloque.getItems();
+        String bloque = bloqueObjeto.toString();
+
+        if(service.agregar(nombre, area, bloque) == null){
+            actualizarLista();
+            txtNombreSolicitante.clear();
+            txtArea.clear();
+            cbBloque.setValue(null);
+
+        }else{
+            mostrarMensaje("Error", "La informacion es incorrecta", Alert.AlertType.INFORMATION);
+        }
     }
 
     @FXML
@@ -97,7 +112,22 @@ public class MainController {
         //
         // Importante:
         // Si nombreOriginal es null, entonces no se ha buscado ni seleccionado nada.
-        mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
+
+        String nombre = txtNombreSolicitante.getText().trim();
+        String area = txtArea.getText().trim();
+        ObservableList<String> bloqueObjeto = cbBloque.getItems();
+        String bloque = bloqueObjeto.toString();
+
+        if(service.actualizar(nombreOriginal, nombre, area, bloque) == null){
+            actualizarLista();
+            txtNombreSolicitante.clear();
+            txtArea.clear();
+            cbBloque.setValue(null);
+        }else{
+            mostrarMensaje("Error", "La informacion es incorrecta", Alert.AlertType.INFORMATION);
+        }
+
+
     }
 
     @FXML
@@ -114,7 +144,14 @@ public class MainController {
         //
         // También se puede seleccionar un elemento del ListView
         // y luego presionar Eliminar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Eliminar", Alert.AlertType.INFORMATION);
+        String nombre = txtNombreSolicitante.getText().trim();
+        if(service.eliminar(nombre) == null){
+            actualizarLista();
+            txtNombreSolicitante.clear();
+            txtArea.clear();
+            cbBloque.setValue(null);
+            System.out.println(service.eliminar(nombre));
+        }
     }
 
     @FXML

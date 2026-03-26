@@ -9,7 +9,12 @@ public class PrestamoExtensionService {
 
     private final PrestamoExtensionRepository repository = new PrestamoExtensionRepository();
 
-    private final String[] bloques = {"Bloque A", "Bloque B", "Bloque C", "Laboratorio"};
+    private final String[] bloques = {
+            "Bloque A",
+            "Bloque B",
+            "Bloque C",
+            "Laboratorio"
+    };
 
     public String[] obtenerBloques() {
         return bloques;
@@ -37,6 +42,14 @@ public class PrestamoExtensionService {
         // 6. Guardarlo usando repository.save(...).
         // 7. Si todo sale bien, regresar null.
         // 8. Si algo falla, regresar un mensaje de error.
+
+        PrestamoExtension objeto = new PrestamoExtension(nombreSolicitante, area, bloque);
+
+        if(!nombreSolicitante.isBlank() && !bloque.isBlank() && !area.isBlank()){
+            repository.save(objeto);
+            return null;
+        }
+
         return "Falta implementar agregar en el service";
     }
 
@@ -52,6 +65,15 @@ public class PrestamoExtensionService {
         //      registro.setArea(...);
         //      registro.setBloque(...);
         // 7. Regresar null si la actualización fue correcta.
+
+        if(!nombreOriginal.isBlank() && !nuevoNombre.isBlank() && !nuevaArea.isBlank() && !nuevoBloque.isBlank()){
+            if(!(repository.findByNombreSolicitante(nombreOriginal) == null)){
+                PrestamoExtension objeto = new PrestamoExtension(nuevoNombre, nuevaArea, nuevoBloque);
+                repository.deleteByNombreSolicitante(nombreOriginal);
+                repository.save(objeto);
+                return null;
+            }
+        }
         return "Falta implementar actualizar en el service";
     }
 
@@ -60,7 +82,15 @@ public class PrestamoExtensionService {
         // 1. Validar que el nombre no esté vacío.
         // 2. Usar repository.deleteByNombreSolicitante(...).
         // 3. Si elimina correctamente, regresar null.
-        // 4. Si no existe, regresar un mensaje de error.
-        return "Falta implementar eliminar en el service";
+        // 4. Si no existe, regresar un mensaje de erro
+
+        if(!nombreSolicitante.isBlank()){
+            repository.deleteByNombreSolicitante(nombreSolicitante);
+            return null;
+        } else if(!repository.deleteByNombreSolicitante(nombreSolicitante)){
+            return "no existe";
+        }
+
+        return nombreSolicitante;
     }
 }
