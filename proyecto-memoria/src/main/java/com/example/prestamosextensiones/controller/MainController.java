@@ -1,6 +1,7 @@
 package com.example.prestamosextensiones.controller;
 
 import com.example.prestamosextensiones.model.PrestamoExtension;
+import com.example.prestamosextensiones.repository.PrestamoExtensionRepository;
 import com.example.prestamosextensiones.service.PrestamoExtensionService;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -27,6 +28,8 @@ public class MainController {
     private final PrestamoExtensionService service = new PrestamoExtensionService();
 
     // Aquí se guarda el nombre original del registro encontrado o seleccionado.
+    private PrestamoExtension[] PrestamoExtension;
+    private PrestamoExtension[] Service;
     private String nombreOriginal;
 
     @FXML
@@ -49,19 +52,48 @@ public class MainController {
         }
     }
 
+    /*@FXML
+    public void agregar() {
+        String[] turnos = service.obtenerBloques();
+        for (int i = 0; i < turnos.length; i++) {
+            cbBloque.getItems().add(turnos[i]);
+        }
+    }*/
+
     @FXML
     public void agregar() {
+        String[] turnos = service.obtenerBloques();
+        for (int i = 0; i < turnos.length; i++) {
+            cbBloque.getItems().add(turnos[i]);
+        }
+        String nombre = txtNombreSolicitante.getText();
+        String area = txtArea.getText();
+        String  bloque = cbBloque.getValue();
+
+
+
+
+        String resultado = service.agregar(nombre, area, bloque);
+
+        if (resultado != null) {
+            mostrarMensaje("Error", resultado, Alert.AlertType.ERROR);
+        } else {
+            actualizarLista();
+            limpiar();
+            mostrarMensaje("Éxito", "Registro agregado correctamente", Alert.AlertType.INFORMATION);
+        }
         // TODO:
         // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
         // 2. Mandar esos datos al service.
         // 3. Si el service regresa un mensaje, mostrar error.
         // 4. Si regresa null, refrescar la lista y limpiar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
+       // mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
     }
 
     @FXML
     public void buscar() {
         // Método de ejemplo resuelto.
+
         PrestamoExtension registro = service.buscarPorNombreSolicitante(txtNombreSolicitante.getText());
 
         if (registro == null) {
@@ -79,6 +111,17 @@ public class MainController {
 
     @FXML
     public void actualizar() {
+        String nombre = this.txtNombreSolicitante.getText().trim();
+
+        for(PrestamoExtension registro : this.Service) {
+            if (registro.getNombreSolicitante().equalsIgnoreCase(nombre) && this.validar(nombre, this.txtArea.getText(),(String)this.cbBloque.getValue())) {
+                registro.setArea(this.txtArea.getText());
+                registro.setBloque((String)this.cbBloque.getValue());
+                this.lvRegistros.refresh();
+                this.mostrarMensaje("datos","Actualizados",Alert.AlertType.INFORMATION);
+                return;
+            }
+        }
         // TODO:
         // UPDATE reutiliza los mismos controles.
         //
@@ -158,4 +201,13 @@ public class MainController {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+    private boolean validar(String nombre, String area, String bloque) {
+        if (!nombre.isEmpty() && area.isEmpty()&& bloque==null) {
+            return false;
+        }
+
+
+        return false;
+    }
+
 }

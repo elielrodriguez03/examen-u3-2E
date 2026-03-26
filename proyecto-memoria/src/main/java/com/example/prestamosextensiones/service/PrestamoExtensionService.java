@@ -2,6 +2,7 @@ package com.example.prestamosextensiones.service;
 
 import com.example.prestamosextensiones.model.PrestamoExtension;
 import com.example.prestamosextensiones.repository.PrestamoExtensionRepository;
+import javafx.scene.control.Alert;
 
 import java.util.List;
 
@@ -27,7 +28,13 @@ public class PrestamoExtensionService {
         return repository.findByNombreSolicitante(nombreSolicitante.trim());
     }
 
-    public String agregar(String nombreSolicitante, String area, String bloque) {
+   public String agregar(String nombreSolicitante, String area, String bloque) {
+       if (nombreSolicitante.isEmpty() || area.isEmpty() || bloque == null) {
+           mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
+       }else{
+           return "Datos registrados";
+       }
+
         // TODO:
         // 1. Validar que nombreSolicitante no esté vacío.
         // 2. Validar que area no esté vacía.
@@ -37,7 +44,8 @@ public class PrestamoExtensionService {
         // 6. Guardarlo usando repository.save(...).
         // 7. Si todo sale bien, regresar null.
         // 8. Si algo falla, regresar un mensaje de error.
-        return "Falta implementar agregar en el service";
+       return "";
+
     }
 
     public String actualizar(String nombreOriginal, String nuevoNombre, String nuevaArea, String nuevoBloque) {
@@ -62,5 +70,12 @@ public class PrestamoExtensionService {
         // 3. Si elimina correctamente, regresar null.
         // 4. Si no existe, regresar un mensaje de error.
         return "Falta implementar eliminar en el service";
+    }
+    private void mostrarMensaje(String titulo, String mensaje, Alert.AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }
