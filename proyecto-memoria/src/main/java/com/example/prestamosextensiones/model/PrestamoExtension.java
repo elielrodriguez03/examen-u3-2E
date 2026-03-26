@@ -2,22 +2,22 @@ package com.example.prestamosextensiones.model;
 
 public class PrestamoExtension {
 
-    private String nombreSolicitante;
+    private String nombre;
     private String area;
     private String bloque;
 
-    public PrestamoExtension(String nombreSolicitante, String area, String bloque) {
-        this.nombreSolicitante = nombreSolicitante;
+    public PrestamoExtension(String nombre, String area, String bloque) {
+        this.nombre = nombre;
         this.area = area;
         this.bloque = bloque;
     }
 
-    public String getNombreSolicitante() {
-        return nombreSolicitante;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombreSolicitante(String nombreSolicitante) {
-        this.nombreSolicitante = nombreSolicitante;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getArea() {
@@ -38,6 +38,6 @@ public class PrestamoExtension {
 
     @Override
     public String toString() {
-        return nombreSolicitante + " | " + area + " | " + bloque;
+        return nombre + " | " + area + " | " + bloque;
     }
 }
