@@ -28,39 +28,68 @@ public class PrestamoExtensionService {
     }
 
     public String agregar(String nombreSolicitante, String area, String bloque) {
-        // TODO:
-        // 1. Validar que nombreSolicitante no esté vacío.
-        // 2. Validar que area no esté vacía.
-        // 3. Validar que bloque no sea null ni vacío.
-        // 4. Validar que no exista otro registro con el mismo nombreSolicitante.
-        // 5. Crear un objeto PrestamoExtension.
-        // 6. Guardarlo usando repository.save(...).
-        // 7. Si todo sale bien, regresar null.
-        // 8. Si algo falla, regresar un mensaje de error.
-        return "Falta implementar agregar en el service";
+
+        PrestamoExtension solicitante = buscarPorNombreSolicitante(nombreSolicitante);
+        if (solicitante != null) {
+            return "Ya existe un registro de préstamo para ese solicitante";
+        }
+
+        String msg = validarDatos(nombreSolicitante, area, bloque);
+        if (msg != null) { return msg;}
+
+        PrestamoExtension prestamo = new PrestamoExtension(nombreSolicitante, area, bloque);
+        repository.save(prestamo);
+
+        return null;
     }
 
     public String actualizar(String nombreOriginal, String nuevoNombre, String nuevaArea, String nuevoBloque) {
-        // TODO:
-        // 1. Validar que nombreOriginal no sea null ni vacío.
-        // 2. Validar los nuevos datos: nuevoNombre, nuevaArea y nuevoBloque.
-        // 3. Buscar el registro original con repository.findByNombreSolicitante(nombreOriginal).
-        // 4. Si no existe, regresar mensaje de error.
-        // 5. Si el nombre cambió, validar que el nuevoNombre no esté repetido.
-        // 6. Si todo está bien, modificar el mismo objeto encontrado:
-        //      registro.setNombreSolicitante(...);
-        //      registro.setArea(...);
-        //      registro.setBloque(...);
-        // 7. Regresar null si la actualización fue correcta.
-        return "Falta implementar actualizar en el service";
+
+        PrestamoExtension solicitante = buscarPorNombreSolicitante(nombreOriginal);
+        if (solicitante == null) {
+            return "Solicitante válido no encontrado.";
+        }
+
+        String msg = validarDatos(nuevoNombre, nuevaArea, nuevoBloque);
+        if (msg != null) { return msg;}
+
+        if (!nuevoNombre.equals(nombreOriginal)){
+            PrestamoExtension prestamo = buscarPorNombreSolicitante(nuevoNombre);
+            if (prestamo != null){
+                return "Ya existe un registro de préstamo a ese solicitante";
+            }
+        }
+
+        solicitante.setNombreSolicitante(nuevoNombre);
+        solicitante.setArea(nuevaArea);
+        solicitante.setBloque(nuevoBloque);
+        return null;
     }
 
     public String eliminar(String nombreSolicitante) {
-        // TODO:
-        // 1. Validar que el nombre no esté vacío.
-        // 2. Usar repository.deleteByNombreSolicitante(...).
-        // 3. Si elimina correctamente, regresar null.
-        // 4. Si no existe, regresar un mensaje de error.
-        return "Falta implementar eliminar en el service";
+
+        PrestamoExtension solicitante = buscarPorNombreSolicitante(nombreSolicitante);
+        if (solicitante == null){
+            return "Solicitante válido no seleccionado";
+        }
+        repository.deleteByNombreSolicitante(nombreSolicitante);
+        return null;
     }
+
+    private String validarDatos(String nombreSolicitante, String area, String bloque){
+        if (nombreSolicitante.isBlank()) {
+            return "El nombre no puede estar vacío.";
+        }
+
+        if (area.isBlank()) {
+            return "El área no puede estar vacía";
+        }
+
+        if (bloque == null) {
+            return "El bloque no puede estar vacío.";
+        }
+
+        return null;
+    }
+
 }
