@@ -4,6 +4,7 @@ import com.example.prestamosextensiones.model.PrestamoExtension;
 import com.example.prestamosextensiones.repository.PrestamoExtensionRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PrestamoExtensionService {
 
@@ -37,6 +38,15 @@ public class PrestamoExtensionService {
         // 6. Guardarlo usando repository.save(...).
         // 7. Si todo sale bien, regresar null.
         // 8. Si algo falla, regresar un mensaje de error.
+
+
+        if(nombreSolicitante.isEmpty() & nombreSolicitante.equals(nombreSolicitante)) return "Ingrese un nombre válido, sin repetir";
+        if (area.isEmpty()) return "Ingrese un area válida";
+        assert bloque != null;
+        if (bloque.isEmpty()) return "Ingrese un bloque válido";
+        Objects PrestamoExtension = null;
+        repository.save(PrestamoExtension);
+
         return "Falta implementar agregar en el service";
     }
 
@@ -52,6 +62,16 @@ public class PrestamoExtensionService {
         //      registro.setArea(...);
         //      registro.setBloque(...);
         // 7. Regresar null si la actualización fue correcta.
+
+        if(nombreOriginal.isEmpty()) return "No puede permanecer vacío";
+        if(nuevoNombre.isEmpty() || nuevaArea.isEmpty() || nuevoBloque.isEmpty());
+        repository.findByNombreSolicitante(nombreOriginal);
+
+        if(nuevoNombre.equals(nombreOriginal)) {
+            return "Ingrese un nombre diferente";
+        }
+
+
         return "Falta implementar actualizar en el service";
     }
 
@@ -61,6 +81,12 @@ public class PrestamoExtensionService {
         // 2. Usar repository.deleteByNombreSolicitante(...).
         // 3. Si elimina correctamente, regresar null.
         // 4. Si no existe, regresar un mensaje de error.
+
+        if(nombreSolicitante.isEmpty()) return "Esta pestaña no debe estar vacía";
+        repository.deleteByNombreSolicitante(nombreSolicitante);
+
+
+
         return "Falta implementar eliminar en el service";
     }
 }

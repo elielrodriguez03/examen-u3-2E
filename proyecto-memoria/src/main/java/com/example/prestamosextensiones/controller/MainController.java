@@ -56,6 +56,15 @@ public class MainController {
         // 2. Mandar esos datos al service.
         // 3. Si el service regresa un mensaje, mostrar error.
         // 4. Si regresa null, refrescar la lista y limpiar.
+
+        txtNombreSolicitante.getText();
+        txtArea.getText();
+        cbBloque.getItems();
+
+        service.agregar(txtNombreSolicitante.getText(),txtArea.getText(), String.valueOf(cbBloque.getItems()));
+
+
+
         mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
     }
 
@@ -81,9 +90,23 @@ public class MainController {
     public void actualizar() {
         // TODO:
         // UPDATE reutiliza los mismos controles.
+        PrestamoExtension registro = service.buscarPorNombreSolicitante(txtNombreSolicitante.getText());
+
+        if(registro == null){
+
+        }
+
+        assert registro != null;
+        txtNombreSolicitante.setText(registro.getNombreSolicitante());
+        txtArea.setText(registro.getArea());
+        cbBloque.setValue(registro.getBloque());
+
         //
         // Flujo esperado:
         // 1. Primero buscar por nombre o seleccionar desde el ListView.
+
+        service.buscarPorNombreSolicitante(txtNombreSolicitante.getText());
+
         // 2. Eso debe cargar los datos en pantalla y guardar nombreOriginal.
         // 3. Luego el usuario modifica txtNombreSolicitante, txtArea y cbBloque.
         // 4. Al presionar Actualizar, mandar al service:
@@ -91,12 +114,17 @@ public class MainController {
         //      - txtNombreSolicitante.getText()
         //      - txtArea.getText()
         //      - cbBloque.getValue()
+
+        service.actualizar(nombreOriginal, txtNombreSolicitante.getText(), txtArea.getText(), cbBloque.getValue());
+
         // 5. El service debe buscar el registro original usando nombreOriginal.
         // 6. Si lo encuentra, debe cambiar sus datos.
         // 7. Luego refrescar el ListView y limpiar los controles.
         //
         // Importante:
         // Si nombreOriginal es null, entonces no se ha buscado ni seleccionado nada.
+
+
         mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
     }
 
@@ -107,13 +135,27 @@ public class MainController {
         //
         // Flujo esperado:
         // 1. Tomar el nombre desde txtNombreSolicitante.
+
+        txtNombreSolicitante.getText();
+        eliminar();
+
         // 2. Mandarlo al service.
+
+        service.eliminar(String.valueOf(txtNombreSolicitante));
+
         // 3. El service debe buscarlo y eliminarlo de la lista.
         // 4. Refrescar el ListView.
         // 5. Limpiar controles.
+        limpiar();
         //
         // También se puede seleccionar un elemento del ListView
+
+        lvRegistros.getSelectionModel().getSelectedItems();
+        eliminar();
+
         // y luego presionar Eliminar.
+
+
         mostrarMensaje("Pendiente", "Completa la lógica de Eliminar", Alert.AlertType.INFORMATION);
     }
 

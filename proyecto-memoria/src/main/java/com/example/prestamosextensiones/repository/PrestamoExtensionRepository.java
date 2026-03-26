@@ -4,6 +4,7 @@ import com.example.prestamosextensiones.model.PrestamoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PrestamoExtensionRepository {
 
@@ -13,7 +14,7 @@ public class PrestamoExtensionRepository {
         return registros;
     }
 
-    public void save(PrestamoExtension registro) {
+    public void save(Objects registro) {
         registros.add(registro);
     }
 
