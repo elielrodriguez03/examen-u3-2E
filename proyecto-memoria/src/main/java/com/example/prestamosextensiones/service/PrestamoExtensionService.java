@@ -28,39 +28,74 @@ public class PrestamoExtensionService {
     }
 
     public String agregar(String nombreSolicitante, String area, String bloque) {
-        // TODO:
-        // 1. Validar que nombreSolicitante no esté vacío.
-        // 2. Validar que area no esté vacía.
-        // 3. Validar que bloque no sea null ni vacío.
-        // 4. Validar que no exista otro registro con el mismo nombreSolicitante.
-        // 5. Crear un objeto PrestamoExtension.
-        // 6. Guardarlo usando repository.save(...).
-        // 7. Si todo sale bien, regresar null.
-        // 8. Si algo falla, regresar un mensaje de error.
-        return "Falta implementar agregar en el service";
+        if (nombreSolicitante == null || nombreSolicitante.trim().isEmpty()) {
+            return "El nombre del solicitante es obligatorio.";
+        }
+        if (area == null || area.trim().isEmpty()) {
+            return "El área es obligatoria.";
+        }
+        if (bloque == null || bloque.trim().isEmpty()) {
+            return "Debe seleccionar un bloque.";
+        }
+
+        if (repository.findByNombreSolicitante(nombreSolicitante.trim()) != null) {
+            return "Ya existe un registro con ese nombre.";
+        }
+
+        PrestamoExtension nuevo = new PrestamoExtension(nombreSolicitante.trim(), area.trim(), bloque.trim());
+        repository.save(nuevo);
+        return null;
     }
 
     public String actualizar(String nombreOriginal, String nuevoNombre, String nuevaArea, String nuevoBloque) {
-        // TODO:
-        // 1. Validar que nombreOriginal no sea null ni vacío.
-        // 2. Validar los nuevos datos: nuevoNombre, nuevaArea y nuevoBloque.
-        // 3. Buscar el registro original con repository.findByNombreSolicitante(nombreOriginal).
-        // 4. Si no existe, regresar mensaje de error.
-        // 5. Si el nombre cambió, validar que el nuevoNombre no esté repetido.
-        // 6. Si todo está bien, modificar el mismo objeto encontrado:
-        //      registro.setNombreSolicitante(...);
-        //      registro.setArea(...);
-        //      registro.setBloque(...);
-        // 7. Regresar null si la actualización fue correcta.
-        return "Falta implementar actualizar en el service";
+        if (nombreOriginal == null || nombreOriginal.trim().isEmpty()) {
+            return "Debe seleccionar o buscar un registro primero.";
+        }
+        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            return "El nuevo nombre es obligatorio.";
+        }
+        if (nuevaArea == null || nuevaArea.trim().isEmpty()) {
+            return "El área es obligatoria.";
+        }
+        if (nuevoBloque == null || nuevoBloque.trim().isEmpty()) {
+            return "Debe seleccionar un bloque.";
+        }
+
+        PrestamoExtension registro = repository.findByNombreSolicitante(nombreOriginal.trim());
+        if (registro == null) {
+            return "No se encontró el registro original.";
+        }
+
+        if (!nombreOriginal.equalsIgnoreCase(nuevoNombre.trim()) &&
+                repository.findByNombreSolicitante(nuevoNombre.trim()) != null) {
+            return "Ya existe un registro con el nuevo nombre.";
+        }
+
+        registro.setNombreSolicitante(nuevoNombre.trim());
+        registro.setArea(nuevaArea.trim());
+        registro.setBloque(nuevoBloque.trim());
+
+        return null;
     }
 
     public String eliminar(String nombreSolicitante) {
-        // TODO:
-        // 1. Validar que el nombre no esté vacío.
-        // 2. Usar repository.deleteByNombreSolicitante(...).
-        // 3. Si elimina correctamente, regresar null.
-        // 4. Si no existe, regresar un mensaje de error.
-        return "Falta implementar eliminar en el service";
+        if (nombreSolicitante == null || nombreSolicitante.trim().isEmpty()) {
+            return "Debe indicar el nombre del solicitante.";
+        }
+
+        boolean eliminado = repository.deleteByNombreSolicitante(nombreSolicitante.trim());
+        if (!eliminado) {
+            return "No se encontró el registro a eliminar.";
+        }
+
+        return null;
     }
+
+    public List<String> obtenerNombresSolicitantes() {
+        return repository.findAll()
+                .stream()
+                .map(PrestamoExtension::getNombreSolicitante)
+                .toList();
+    }
+
 }
