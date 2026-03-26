@@ -56,7 +56,17 @@ public class MainController {
         // 2. Mandar esos datos al service.
         // 3. Si el service regresa un mensaje, mostrar error.
         // 4. Si regresa null, refrescar la lista y limpiar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
+        String nombre = txtNombreSolicitante.getText();
+        String area = txtArea.getText();
+        String bloque = cbBloque.getValue();
+        String verificado = service.agregar(nombre, area, bloque);
+            if (verificado == null) {
+                actualizarLista();
+                limpiar();
+                mostrarMensaje("Correcto", "agregado con exito", Alert.AlertType.INFORMATION);
+            } else {
+                mostrarMensaje("Error al agregar", verificado, Alert.AlertType.ERROR);
+            }
     }
 
     @FXML
@@ -97,6 +107,10 @@ public class MainController {
         //
         // Importante:
         // Si nombreOriginal es null, entonces no se ha buscado ni seleccionado nada.
+
+        //PrestamoExtension registro = service.actualizar();
+
+
         mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
     }
 

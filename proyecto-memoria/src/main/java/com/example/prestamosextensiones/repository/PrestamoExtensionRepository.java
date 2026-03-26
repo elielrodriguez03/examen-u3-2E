@@ -13,9 +13,7 @@ public class PrestamoExtensionRepository {
         return registros;
     }
 
-    public void save(PrestamoExtension registro) {
-        registros.add(registro);
-    }
+    public void save(PrestamoExtension repo1) {registros.add(repo1);}
 
     public PrestamoExtension findByNombreSolicitante(String nombreSolicitante) {
         for (int i = 0; i < registros.size(); i++) {

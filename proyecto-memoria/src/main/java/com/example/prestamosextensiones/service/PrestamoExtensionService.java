@@ -37,7 +37,23 @@ public class PrestamoExtensionService {
         // 6. Guardarlo usando repository.save(...).
         // 7. Si todo sale bien, regresar null.
         // 8. Si algo falla, regresar un mensaje de error.
-        return "Falta implementar agregar en el service";
+        if(nombreSolicitante.trim().isEmpty()){
+            return "El nombre no puede estar vacio";
+        }
+        if(area == null || area.trim().isEmpty()){
+            return "El area no puede estar vacia";
+        }
+        if(bloque == null || bloque.trim().isEmpty()){
+            return "El bloque no puede estar vacio";
+        }
+
+        if(repository.findByNombreSolicitante(nombreSolicitante.trim()) != null){
+            return "Registro ya existente";
+        }
+
+        PrestamoExtension repo1 = new PrestamoExtension(nombreSolicitante, area.trim(), bloque.trim());
+        repository.save(repo1);
+        return null;
     }
 
     public String actualizar(String nombreOriginal, String nuevoNombre, String nuevaArea, String nuevoBloque) {
@@ -52,6 +68,10 @@ public class PrestamoExtensionService {
         //      registro.setArea(...);
         //      registro.setBloque(...);
         // 7. Regresar null si la actualización fue correcta.
+        if(repository.findByNombreSolicitante(nombreOriginal.trim()) != null){
+
+        }
+
         return "Falta implementar actualizar en el service";
     }
 
@@ -61,6 +81,8 @@ public class PrestamoExtensionService {
         // 2. Usar repository.deleteByNombreSolicitante(...).
         // 3. Si elimina correctamente, regresar null.
         // 4. Si no existe, regresar un mensaje de error.
+
         return "Falta implementar eliminar en el service";
     }
+
 }
