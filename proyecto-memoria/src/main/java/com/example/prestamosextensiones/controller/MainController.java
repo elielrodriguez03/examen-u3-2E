@@ -8,6 +8,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import java.security.Provider;
 import java.util.List;
 
 public class MainController {
@@ -53,10 +54,23 @@ public class MainController {
     public void agregar() {
         // TODO:
         // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
+
+        String nombreSolicitante = txtNombreSolicitante.getText();
+        String area = txtArea.getText();
+        String bloque = cbBloque.getValue();
+
         // 2. Mandar esos datos al service.
         // 3. Si el service regresa un mensaje, mostrar error.
-        // 4. Si regresa null, refrescar la lista y limpiar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
+
+        String resultado = service.agregar(nombreSolicitante, area, bloque);
+
+        if (service.agregar(nombreSolicitante, area, bloque) != null) {
+            mostrarMensaje("Error", resultado, Alert.AlertType.ERROR);
+        } else {  // 4. Si regresa null, refrescar la lista y limpiar.
+            limpiar();
+            actualizar();
+        }
+
     }
 
     @FXML
@@ -85,7 +99,29 @@ public class MainController {
         // Flujo esperado:
         // 1. Primero buscar por nombre o seleccionar desde el ListView.
         // 2. Eso debe cargar los datos en pantalla y guardar nombreOriginal.
-        // 3. Luego el usuario modifica txtNombreSolicitante, txtArea y cbBloque.
+
+        PrestamoExtension registro = service.buscarPorNombreSolicitante(txtNombreSolicitante.getText());
+
+        if (registro == null) {
+            mostrarMensaje("Aviso", "Registro no encontrado", Alert.AlertType.WARNING);
+            return;
+        }
+
+        txtNombreSolicitante.setText(registro.getNombreSolicitante());
+        txtArea.setText(registro.getArea());
+        cbBloque.setValue(registro.getBloque());
+
+        // Este valor es clave para UPDATE.
+        nombreOriginal = registro.getNombreSolicitante();
+
+        String resultado = service.actualizar();
+
+        if (service.actualizar(txtNombreSolicitante, txtArea) != null) {
+            mostrarMensaje("Error", resultado, Alert.AlertType.ERROR);
+        } else {  // 4. Si regresa null, refrescar la lista y limpiar.
+            limpiar();
+            actualizar();
+        }
         // 4. Al presionar Actualizar, mandar al service:
         //      - nombreOriginal
         //      - txtNombreSolicitante.getText()
@@ -104,6 +140,7 @@ public class MainController {
     public void eliminar() {
         // TODO:
         // DELETE sí borra el objeto de la lista.
+
         //
         // Flujo esperado:
         // 1. Tomar el nombre desde txtNombreSolicitante.

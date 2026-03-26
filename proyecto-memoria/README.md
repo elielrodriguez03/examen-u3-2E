@@ -190,7 +190,7 @@ nombre-apellido-u3-grado-grupo
 Ejemplo para este grupo:
 ```text
 eliel-rodriguez-u3-2E
-```
+``
 
 ## Entrega
 1. Cuando terminen, avísenle al profesor su username de GitHub.
