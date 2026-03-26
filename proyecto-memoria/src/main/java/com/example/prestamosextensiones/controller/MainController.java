@@ -56,6 +56,18 @@ public class MainController {
         // 2. Mandar esos datos al service.
         // 3. Si el service regresa un mensaje, mostrar error.
         // 4. Si regresa null, refrescar la lista y limpiar.
+        String Nombre = txtNombreSolicitante.getText();
+        String Area = txtArea.getText();
+        String Bloque = cbBloque.getValue();
+        String resultado = service.agregar(Nombre, Area, Bloque);
+
+        if (resultado != null) { // Si hay error
+            mostrarMensaje("Error al agregar", resultado, Alert.AlertType.ERROR);
+        } else { // Si todo salió bien
+            actualizarLista();
+            limpiar();
+            mostrarMensaje("Agregado", "Registro agregado correctamente", Alert.AlertType.INFORMATION);
+        }
         mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
     }
 
@@ -97,8 +109,27 @@ public class MainController {
         //
         // Importante:
         // Si nombreOriginal es null, entonces no se ha buscado ni seleccionado nada.
-        mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
+        if (nombreOriginal == null) {
+            mostrarMensaje("Error", "Selecciona un registro", Alert.AlertType.WARNING);
+            return;
+        }
+
+        String NombreNuevo = txtNombreSolicitante.getText();
+        String AreaNuevo = txtArea.getText();
+        String BloqueNuevo = cbBloque.getValue();
+
+        String resultado = service.actualizar(nombreOriginal, NombreNuevo, AreaNuevo, BloqueNuevo);
+
+        if (resultado != null) {
+            mostrarMensaje("Error al actualizar", resultado, Alert.AlertType.ERROR);
+        } else {
+            actualizarLista();
+            limpiar();
+            mostrarMensaje("Éxito", "Registro actualizado correctamente.", Alert.AlertType.INFORMATION);
+        }
+        mostrarMensaje("Pendiente","Completa la lógica de Actualizar",Alert.AlertType.INFORMATION);
     }
+
 
     @FXML
     public void eliminar() {
@@ -114,6 +145,15 @@ public class MainController {
         //
         // También se puede seleccionar un elemento del ListView
         // y luego presionar Eliminar.
+        String nombreAEliminar = txtNombreSolicitante.getText();
+        String resultado = service.eliminar(nombreAEliminar);
+        if (resultado != null) {
+            mostrarMensaje("Error al eliminar", resultado, Alert.AlertType.ERROR);
+        } else { // Si todo salió bien
+            actualizarLista();
+            limpiar();
+            mostrarMensaje("Exitoso", "Registro eliminado", Alert.AlertType.INFORMATION);
+        }
         mostrarMensaje("Pendiente", "Completa la lógica de Eliminar", Alert.AlertType.INFORMATION);
     }
 
