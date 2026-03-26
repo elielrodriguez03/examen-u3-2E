@@ -53,9 +53,20 @@ public class MainController {
     public void agregar() {
         // TODO:
         // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
+        String nombreSolicitante = txtNombreSolicitante.getText().trim();
+        String area = txtArea.getText().trim();
+        String bloque = cbBloque.getValue();
         // 2. Mandar esos datos al service.
+        if (nombreSolicitante.isEmpty() || area.isEmpty() || cbBloque == null){
+            mostrarMensaje("Alerta", "Debes seleccionar un objeto", Alert.AlertType.WARNING);
+            return;
+        }
         // 3. Si el service regresa un mensaje, mostrar error.
+        String error = service.agregar(nombreSolicitante, area, bloque);
+        mostrarMensaje("Alerta", "Ocurrio un error", Alert.AlertType.ERROR);
         // 4. Si regresa null, refrescar la lista y limpiar.
+        actualizarLista();
+        limpiar();
         mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
     }
 
@@ -84,6 +95,16 @@ public class MainController {
         //
         // Flujo esperado:
         // 1. Primero buscar por nombre o seleccionar desde el ListView.
+        lvRegistros.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                cargarSeleccion(newValue);
+            }
+        });
+
+        if (nombreOriginal == null) {
+            mostrarMensaje("Atención", "Primero debes buscar o seleccionar un registro de la lista para actualizar.", Alert.AlertType.WARNING);
+            return;
+        }
         // 2. Eso debe cargar los datos en pantalla y guardar nombreOriginal.
         // 3. Luego el usuario modifica txtNombreSolicitante, txtArea y cbBloque.
         // 4. Al presionar Actualizar, mandar al service:
@@ -91,12 +112,26 @@ public class MainController {
         //      - txtNombreSolicitante.getText()
         //      - txtArea.getText()
         //      - cbBloque.getValue()
+
+        String nombreNuevo = txtNombreSolicitante.getText();
+        String areaNueva = txtArea.getText();
+        String turnoNuevo = cbBloque.getValue();
+
+        String resultado = service.actualizar(nombreOriginal, nombreNuevo, areaNueva, turnoNuevo);
+
         // 5. El service debe buscar el registro original usando nombreOriginal.
         // 6. Si lo encuentra, debe cambiar sus datos.
         // 7. Luego refrescar el ListView y limpiar los controles.
         //
         // Importante:
         // Si nombreOriginal es null, entonces no se ha buscado ni seleccionado nada.
+        if (resultado != null) {
+            mostrarMensaje("Ocurrio un error al actualizar", resultado, Alert.AlertType.ERROR);
+        } else {
+            actualizarLista();
+            limpiar();
+            mostrarMensaje("Éxito", "Registro actualizado correctamente.", Alert.AlertType.INFORMATION);
+        }
         mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
     }
 
@@ -107,12 +142,27 @@ public class MainController {
         //
         // Flujo esperado:
         // 1. Tomar el nombre desde txtNombreSolicitante.
+        String nombreEliminar = txtNombreSolicitante.getText();
+
+        String resultado = service.eliminar(nombreEliminar);
         // 2. Mandarlo al service.
         // 3. El service debe buscarlo y eliminarlo de la lista.
         // 4. Refrescar el ListView.
         // 5. Limpiar controles.
+        if (resultado != null) {
+            mostrarMensaje("Hubo un error al eliminar", resultado, Alert.AlertType.ERROR);
+        } else {
+            actualizarLista();
+            limpiar();
+            mostrarMensaje("Éxito", "Solicitante eliminado correctamente", Alert.AlertType.INFORMATION);
+        }
         //
         // También se puede seleccionar un elemento del ListView
+        lvRegistros.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                cargarSeleccion(newValue);
+            }
+        });
         // y luego presionar Eliminar.
         mostrarMensaje("Pendiente", "Completa la lógica de Eliminar", Alert.AlertType.INFORMATION);
     }
