@@ -27,7 +27,7 @@ public class MainController {
     private final PrestamoExtensionService service = new PrestamoExtensionService();
 
     // Aquí se guarda el nombre original del registro encontrado o seleccionado.
-    private String nombreOriginal;
+     public String nombreOriginal;
 
     @FXML
     public void initialize() {
@@ -44,8 +44,10 @@ public class MainController {
 
     private void cargarBloques() {
         String[] bloques = service.obtenerBloques();
-        for (int i = 0; i < bloques.length; i++) {
+        int i = 0;
+        while (i < bloques.length) {
             cbBloque.getItems().add(bloques[i]);
+            i++;
         }
     }
 
@@ -53,8 +55,22 @@ public class MainController {
     public void agregar() {
         // TODO:
         // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
+        String nombre = this.txtNombreSolicitante.getText();
+        String Area = this.txtArea.getText();
+        String bloque = (String)this.cbBloque.getValue();
+
         // 2. Mandar esos datos al service.
+        this.service.agregar(nombre, Area, bloque);
         // 3. Si el service regresa un mensaje, mostrar error.
+        this.txtNombreSolicitante.setText(this.txtNombreSolicitante.getText());
+        this.txtArea.setText(this.txtArea.getText());
+        this.cbBloque.setValue((String)this.cbBloque.getValue());
+        this.mostrarMensaje("error", "Hay un error",Alert.AlertType.ERROR);
+        this.txtNombreSolicitante.clear();
+        this.txtArea.clear();
+        this.cbBloque.setValue(null);
+        this.lvRegistros.getSelectionModel().clearSelection();
+        this.nombreOriginal = null;
         // 4. Si regresa null, refrescar la lista y limpiar.
         mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
     }
@@ -67,7 +83,12 @@ public class MainController {
         if (registro == null) {
             mostrarMensaje("Aviso", "Registro no encontrado", Alert.AlertType.WARNING);
             return;
-        }
+        } else {
+        this.txtNombreSolicitante.setText(registro.getNombreSolicitante());
+        this.txtArea.setText(registro.getArea());
+        this.cbBloque.setValue(registro.getBloque());
+        this.nombreOriginal = registro.getNombreSolicitante();
+    }
 
         txtNombreSolicitante.setText(registro.getNombreSolicitante());
         txtArea.setText(registro.getArea());
@@ -79,6 +100,17 @@ public class MainController {
 
     @FXML
     public void actualizar() {
+        String nuevoNombre = this.txtNombreSolicitante.getText();
+        String nuevoLibro = this.txtArea.getText();
+        String nuevoTurno = (String)this.cbBloque.getValue();
+        String mensaje = this.service.actualizar(this.nombreOriginal, nuevoNombre, nuevoLibro, nuevoTurno);
+        if (mensaje == null) {
+            this.actualizarLista();
+            this.txtArea.clear();
+        }
+
+        this.mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
+
         // TODO:
         // UPDATE reutiliza los mismos controles.
         //
@@ -130,15 +162,18 @@ public class MainController {
         lvRegistros.getItems().clear();
         List<PrestamoExtension> registros = service.obtenerTodos();
 
-        for (int i = 0; i < registros.size(); i++) {
+        int i = 0;
+        while (i < registros.size()) {
             lvRegistros.getItems().add(registros.get(i).toString());
+            i++;
         }
     }
 
     private void cargarSeleccion(String textoSeleccionado) {
         List<PrestamoExtension> registros = service.obtenerTodos();
 
-        for (int i = 0; i < registros.size(); i++) {
+        int i = 0;
+        while (i < registros.size()) {
             PrestamoExtension actual = registros.get(i);
 
             if (actual.toString().equals(textoSeleccionado)) {
@@ -148,6 +183,7 @@ public class MainController {
                 nombreOriginal = actual.getNombreSolicitante();
                 break;
             }
+            i++;
         }
     }
 
@@ -159,3 +195,8 @@ public class MainController {
         alert.showAndWait();
     }
 }
+
+
+
+
+
