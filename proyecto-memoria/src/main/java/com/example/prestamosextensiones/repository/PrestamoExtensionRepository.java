@@ -15,6 +15,7 @@ public class PrestamoExtensionRepository {
 
     public void save(PrestamoExtension registro) {
         registros.add(registro);
+        System.out.println(registro.toString());
     }
 
     public PrestamoExtension findByNombreSolicitante(String nombreSolicitante) {
@@ -28,14 +29,10 @@ public class PrestamoExtensionRepository {
         return null;
     }
 
-    public boolean deleteByNombreSolicitante(String nombreSolicitante) {
-        for (int i = 0; i < registros.size(); i++) {
-            PrestamoExtension actual = registros.get(i);
-
-            if (actual.getNombreSolicitante().equalsIgnoreCase(nombreSolicitante)) {
-                registros.remove(i);
-                return true;
-            }
+    public boolean deleteByNombreSolicitante(int index) {
+        if(index>=0){
+            registros.remove(index);
+            return true;
         }
         return false;
     }

@@ -6,7 +6,6 @@ import com.example.prestamosextensiones.repository.PrestamoExtensionRepository;
 import java.util.List;
 
 public class PrestamoExtensionService {
-
     private final PrestamoExtensionRepository repository = new PrestamoExtensionRepository();
 
     private final String[] bloques = {"Bloque A", "Bloque B", "Bloque C", "Laboratorio"};
@@ -37,7 +36,20 @@ public class PrestamoExtensionService {
         // 6. Guardarlo usando repository.save(...).
         // 7. Si todo sale bien, regresar null.
         // 8. Si algo falla, regresar un mensaje de error.
-        return "Falta implementar agregar en el service";
+
+        if(nombreSolicitante!=null&&area!=null&&bloque!=null){
+            if(nombreSolicitante.isBlank()||area.isBlank()||bloque.isBlank()){
+                return "campos vacios";
+            }else {
+                if(buscarPorNombreSolicitante(nombreSolicitante)==null){
+                    PrestamoExtension prestamo= new PrestamoExtension(nombreSolicitante,area,bloque);
+                    repository.save(prestamo);
+                    return null;
+                }
+                return "nombre repetido";
+            }
+        }
+        return "campos incompletos";
     }
 
     public String actualizar(String nombreOriginal, String nuevoNombre, String nuevaArea, String nuevoBloque) {
@@ -55,12 +67,17 @@ public class PrestamoExtensionService {
         return "Falta implementar actualizar en el service";
     }
 
-    public String eliminar(String nombreSolicitante) {
+    public String eliminar(int index) {
         // TODO:
         // 1. Validar que el nombre no esté vacío.
         // 2. Usar repository.deleteByNombreSolicitante(...).
         // 3. Si elimina correctamente, regresar null.
         // 4. Si no existe, regresar un mensaje de error.
-        return "Falta implementar eliminar en el service";
+
+        if(repository.deleteByNombreSolicitante(index)){
+            return null;
+        }
+        return "no encontrado";
     }
+
 }

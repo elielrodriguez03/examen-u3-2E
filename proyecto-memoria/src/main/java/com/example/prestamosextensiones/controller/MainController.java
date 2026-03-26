@@ -1,16 +1,16 @@
 package com.example.prestamosextensiones.controller;
 
 import com.example.prestamosextensiones.model.PrestamoExtension;
+import com.example.prestamosextensiones.repository.PrestamoExtensionRepository;
 import com.example.prestamosextensiones.service.PrestamoExtensionService;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.util.List;
 
 public class MainController {
+    @FXML
+    private Label lblEstado;
 
     @FXML
     private TextField txtNombreSolicitante;
@@ -26,6 +26,7 @@ public class MainController {
 
     private final PrestamoExtensionService service = new PrestamoExtensionService();
 
+
     // Aquí se guarda el nombre original del registro encontrado o seleccionado.
     private String nombreOriginal;
 
@@ -33,6 +34,7 @@ public class MainController {
     public void initialize() {
         cargarBloques();
         actualizarLista();
+        lblEstado.setVisible(false);
 
         // También se puede cargar un registro seleccionándolo en el ListView.
         lvRegistros.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -51,21 +53,30 @@ public class MainController {
 
     @FXML
     public void agregar() {
-        // TODO:
-        // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
-        // 2. Mandar esos datos al service.
-        // 3. Si el service regresa un mensaje, mostrar error.
-        // 4. Si regresa null, refrescar la lista y limpiar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
+        try {
+            String nom = txtNombreSolicitante.getText();
+            String area = txtArea.getText();
+            String bloque1 = cbBloque.getValue().toString();
+            String msg = service.agregar(nom, area, bloque1);
+            if (msg == null) {
+                actualizarLista();
+            } else {
+                System.out.println(msg);
+            }
+        } catch (Exception e) {
+            lblEstado.setText("campos invalidos");
+            lblEstado.setVisible(true);
+        }
+
     }
 
     @FXML
-    public void buscar() {
+    public void buscar(String msg) {
         // Método de ejemplo resuelto.
         PrestamoExtension registro = service.buscarPorNombreSolicitante(txtNombreSolicitante.getText());
 
         if (registro == null) {
-            mostrarMensaje("Aviso", "Registro no encontrado", Alert.AlertType.WARNING);
+            mostrarMensaje("Aviso", msg, Alert.AlertType.WARNING);
             return;
         }
 
@@ -97,7 +108,21 @@ public class MainController {
         //
         // Importante:
         // Si nombreOriginal es null, entonces no se ha buscado ni seleccionado nada.
-        mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
+        buscar("actualizado");
+        try {
+            String nom = txtNombreSolicitante.getText();
+            String area = txtArea.getText();
+            String bloque1 = cbBloque.getValue().toString();
+            String msg = service.agregar(nom, area, bloque1);
+            if (msg == null) {
+                actualizarLista();
+            } else {
+                System.out.println(msg);
+            }
+        } catch (Exception e) {
+            lblEstado.setText("campos invalidos");
+            lblEstado.setVisible(true);
+        }
     }
 
     @FXML
@@ -114,7 +139,10 @@ public class MainController {
         //
         // También se puede seleccionar un elemento del ListView
         // y luego presionar Eliminar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Eliminar", Alert.AlertType.INFORMATION);
+        int indice=lvRegistros.getSelectionModel().getSelectedIndex();
+        service.eliminar(indice);
+        limpiar();
+        actualizarLista();
     }
 
     @FXML
@@ -124,6 +152,7 @@ public class MainController {
         cbBloque.setValue(null);
         lvRegistros.getSelectionModel().clearSelection();
         nombreOriginal = null;
+        lblEstado.setVisible(false);
     }
 
     private void actualizarLista() {
