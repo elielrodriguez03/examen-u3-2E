@@ -53,10 +53,24 @@ public class MainController {
     public void agregar() {
         // TODO:
         // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
+        String nombreSolicitante = txtNombreSolicitante.getText();
+        String area=txtArea.getText();
+        String bloque= cbBloque.getValue();
+
         // 2. Mandar esos datos al service.
+        String mensaje= service.agregar(nombreSolicitante , area , bloque);
+
         // 3. Si el service regresa un mensaje, mostrar error.
+        if (mensaje!=null){
+            mostrarMensaje("Error:  ", mensaje, Alert.AlertType.INFORMATION);
+        }
+
         // 4. Si regresa null, refrescar la lista y limpiar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Agregar", Alert.AlertType.INFORMATION);
+        if (mensaje==null){
+            mostrarMensaje("Estado: ", "Agregado correctamente", Alert.AlertType.INFORMATION);
+            actualizarLista();
+            limpiar();
+        }
     }
 
     @FXML
@@ -81,9 +95,12 @@ public class MainController {
     public void actualizar() {
         // TODO:
         // UPDATE reutiliza los mismos controles.
+        PrestamoExtension registro = service.buscarPorNombreSolicitante(txtNombreSolicitante.getText());
         //
         // Flujo esperado:
         // 1. Primero buscar por nombre o seleccionar desde el ListView.
+        nombreOriginal=registro.getNombreSolicitante();
+
         // 2. Eso debe cargar los datos en pantalla y guardar nombreOriginal.
         // 3. Luego el usuario modifica txtNombreSolicitante, txtArea y cbBloque.
         // 4. Al presionar Actualizar, mandar al service:
@@ -91,13 +108,22 @@ public class MainController {
         //      - txtNombreSolicitante.getText()
         //      - txtArea.getText()
         //      - cbBloque.getValue()
+        String nuevoNombre= txtNombreSolicitante.getText();
+        String nuevaArea=txtArea.getText();
+        String nuevoBloque=cbBloque.getValue();
+        String mensaje=service.actualizar(nombreOriginal,nuevoNombre,nuevaArea,nuevoBloque);
         // 5. El service debe buscar el registro original usando nombreOriginal.
         // 6. Si lo encuentra, debe cambiar sus datos.
         // 7. Luego refrescar el ListView y limpiar los controles.
         //
         // Importante:
         // Si nombreOriginal es null, entonces no se ha buscado ni seleccionado nada.
-        mostrarMensaje("Pendiente", "Completa la lógica de Actualizar", Alert.AlertType.INFORMATION);
+        if (mensaje==null){
+            mostrarMensaje("Estado: ", "Actualizado correctamente", Alert.AlertType.INFORMATION);
+        }else {
+            mostrarMensaje("Error", mensaje, Alert.AlertType.INFORMATION);
+        }
+
     }
 
     @FXML
@@ -107,14 +133,22 @@ public class MainController {
         //
         // Flujo esperado:
         // 1. Tomar el nombre desde txtNombreSolicitante.
+        String nombreSoliciante=txtNombreSolicitante.getText();
         // 2. Mandarlo al service.
+        String mensaje=service.eliminar(nombreSoliciante);
         // 3. El service debe buscarlo y eliminarlo de la lista.
         // 4. Refrescar el ListView.
+        actualizarLista();
         // 5. Limpiar controles.
-        //
+        limpiar();
         // También se puede seleccionar un elemento del ListView
         // y luego presionar Eliminar.
-        mostrarMensaje("Pendiente", "Completa la lógica de Eliminar", Alert.AlertType.INFORMATION);
+        if (mensaje==null){
+            mostrarMensaje("Estado", "Eliminado", Alert.AlertType.INFORMATION);
+        }else{
+            mostrarMensaje("Error:", mensaje, Alert.AlertType.INFORMATION);
+        }
+
     }
 
     @FXML
