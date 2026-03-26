@@ -52,7 +52,16 @@ public class MainController {
     @FXML
     public void agregar() {
         // TODO:
+        PrestamoExtension registro = (PrestamoExtension) service.agregar(txtNombreSolicitante.getText(), txtArea.getText(), String.valueOf(cbBloque.getItems()));
+        if (registro == null){
+            mostrarMensaje("Aviso", "Registro no encontrado", Alert.AlertType.ERROR);
+        }
         // 1. Leer txtNombreSolicitante, txtArea y cbBloque.
+        assert registro != null;
+        txtNombreSolicitante.setText(registro.getNombreSolicitante());
+        txtArea.setText(registro.getArea());
+        cbBloque.setValue(registro.getBloque());
+
         // 2. Mandar esos datos al service.
         // 3. Si el service regresa un mensaje, mostrar error.
         // 4. Si regresa null, refrescar la lista y limpiar.

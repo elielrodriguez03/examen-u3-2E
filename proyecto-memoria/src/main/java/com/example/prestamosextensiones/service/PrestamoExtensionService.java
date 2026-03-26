@@ -4,6 +4,7 @@ import com.example.prestamosextensiones.model.PrestamoExtension;
 import com.example.prestamosextensiones.repository.PrestamoExtensionRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PrestamoExtensionService {
 
@@ -27,18 +28,20 @@ public class PrestamoExtensionService {
         return repository.findByNombreSolicitante(nombreSolicitante.trim());
     }
 
-    public String agregar(String nombreSolicitante, String area, String bloque) {
-        // TODO:
-        // 1. Validar que nombreSolicitante no esté vacío.
-        // 2. Validar que area no esté vacía.
-        // 3. Validar que bloque no sea null ni vacío.
-        // 4. Validar que no exista otro registro con el mismo nombreSolicitante.
-        // 5. Crear un objeto PrestamoExtension.
-        // 6. Guardarlo usando repository.save(...).
-        // 7. Si todo sale bien, regresar null.
-        // 8. Si algo falla, regresar un mensaje de error.
-        return "Falta implementar agregar en el service";
+    public String ParametroExtension;
+
+    public Object agregar(String nombreSolicitante, String area, String bloque)   {
+        if (Objects.equals(agregar(nombreSolicitante, area, bloque), ParametroExtension)){
+            Object PrestamoExtension = null;
+            repository.save(null);
+            return null;
+        }
+
+        return "Error";
     }
+
+
+
 
     public String actualizar(String nombreOriginal, String nuevoNombre, String nuevaArea, String nuevoBloque) {
         // TODO:
@@ -52,6 +55,11 @@ public class PrestamoExtensionService {
         //      registro.setArea(...);
         //      registro.setBloque(...);
         // 7. Regresar null si la actualización fue correcta.
+        if (nombreOriginal == null || nombreOriginal.trim().isEmpty()){
+            return null;
+        }
+
+
         return "Falta implementar actualizar en el service";
     }
 
@@ -63,4 +71,6 @@ public class PrestamoExtensionService {
         // 4. Si no existe, regresar un mensaje de error.
         return "Falta implementar eliminar en el service";
     }
+
+
 }

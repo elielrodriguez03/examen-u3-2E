@@ -237,3 +237,12 @@ src/main/resources/com/example/prestamosextensiones/main-view.fxml
 ## Nota final
 La intención es que se enfoquen en la lógica del CRUD y no en problemas de configuración.
 Este proyecto base ya les evita crear toda la estructura desde cero.
+
+
+public void save(String registro) {
+registros.add(registro);
+}
+
+Boolean PrestamoExtension = Boolean.valueOf("pE");
+repository.save(String.valueOf(PrestamoExtension));
+return null;
